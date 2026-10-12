@@ -1,0 +1,41 @@
+SUSTENTACION - EXAMEN PARCIAL SI732
+CASO: TENIS CHAMPIONS
+
+====================================================================
+
+PREGUNTA 1 - UML CLASS DIAGRAM
+
+Elabore el diagrama de clases en PlantUML identificando a Campeonato como la
+clase critica, con composicion hacia Inscripcion, Grupo y Ronda, agregacion
+entre Grupo y Jugador, la interfaz PagoService y los enums Categoria (con su
+atributo nivel), EstadoJugador, EstadoInscripcion y EstadoPartido, indicando
+multiplicidades y el scope de cada atributo y metodo.
+
+--------------------------------------------------------------------
+
+PREGUNTA 2 - UNIT TEST & INTEGRATION TEST
+
+Selecciono la clase Campeonato porque concentra el business rule y elaboro 4
+pruebas unitarias y 1 integral en Java con JUnit y Mockito usando el patron AAA.
+Las unitarias mockean PagoService para aislar cada regla (jugador sin experiencia,
+categoria ya campeonada, jugador inhabilitado y pago rechazado) y la integral usa
+PagoServiceImpl real para inscribir 8 jugadores y validar el sorteo de grupos.
+
+--------------------------------------------------------------------
+
+PREGUNTA 3 - FEATURE, SCENARIOS, DATA TABLES & EXAMPLES
+
+Redacto el feature de inscripcion al campeonato en Gherkin con Given-When-Then,
+usando Background para el campeonato, Data Tables para los datos del jugador y la
+lista de inscritos del sorteo, y un Scenario Outline con Examples que recorre las
+cinco categorias frente a un campeon de tercera para probar el limite de la regla.
+
+--------------------------------------------------------------------
+
+PREGUNTA 4 - STEP DEFINITION IMPLEMENTATION
+
+Implemento los Step Definitions en Java con Cucumber. Los pasos @Dado leen las
+Data Tables con tabla.asMaps() y crean el campeonato y los jugadores con su
+historial, los @Cuando ejecutan la inscripcion o el sorteo capturando las
+excepciones en try/catch, y los @Entonces validan con asserts el estado de la
+inscripcion y que ningun grupo tenga dos cabezas de serie.

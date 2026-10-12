@@ -1,0 +1,130 @@
+@startuml
+title Minera Chinalco Peru S.A. - Gestion de Exploracion Minera
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+' ===================== ENUMERACIONES =====================
+enum EstadoExploracion {
+  EN_CURSO
+  VIABLE
+  NO_VIABLE
+}
+
+enum TipoPermiso {
+  EXPLORACION
+  AGUAS
+  EXPLOSIVOS
+}
+
+enum TipoZona {
+  LIBRE
+  CERCADA
+  ARQUEOLOGICA
+  URBANA
+  RESERVA_NACIONAL
+}
+
+' ===================== INTERFACES =====================
+interface PermisoService {
+  + tienePermisoVigente(terreno: Terreno, tipo: TipoPermiso): boolean
+}
+
+class PermisoServiceImpl {
+  + tienePermisoVigente(terreno: Terreno, tipo: TipoPermiso): boolean
+}
+
+' ===================== CLASE CRITICA =====================
+class ExploracionMinera {
+  - idExploracion: String
+  - fechaInicio: Date
+  - fechaFin: Date
+  - estado: EstadoExploracion
+  - LEY_MINIMA_VIABLE: double {static}
+  + agregarPlataforma(p: PlataformaExploracion): void
+  + calcularLeyPromedio(): double
+  + calcularCantidadMineral(): double
+  + esViable(): boolean
+  + finalizarExploracion(): void
+  + getEstado(): EstadoExploracion
+}
+
+class PlataformaExploracion {
+  - codigo: String
+  - latitud: double
+  - longitud: double
+  + agregarMuestra(m: MuestraRoca): void
+  + getMuestras(): List<MuestraRoca>
+}
+
+class MuestraRoca {
+  - profundidad: int
+  - cantidadMineral: double
+  - ley: double
+  + getLey(): double
+  + getCantidadMineral(): double
+}
+
+' ===================== CLASES DE APOYO =====================
+class Terreno {
+  - idTerreno: String
+  - superficie: double
+  - tipoZona: TipoZona
+  - autorizacionEstado: boolean
+  + esZonaRestringida(): boolean
+  + puedeIntervenirse(): boolean
+  + agregarPermiso(p: Permiso): void
+}
+
+class Permiso {
+  - idPermiso: String
+  - tipo: TipoPermiso
+  - fechaVencimiento: Date
+  + estaVigente(): boolean
+}
+
+class ConcesionExploracion {
+  - numero: String
+  - fechaOtorgamiento: Date
+  - fechaVencimiento: Date
+  + estaVigente(): boolean
+}
+
+class EstudioAmbiental {
+  - numeroRegistro: String
+  - fechaInicio: Date
+  - fechaFin: Date
+  - aprobado: boolean
+  + estaAprobado(): boolean
+}
+
+class Usuario {
+  # idUsuario: String
+  # nombre: String
+  # correo: String
+  + actualizarDatos(): boolean
+}
+
+class MiembroEquipo {
+  - rol: String
+  + asignarAExploracion(e: ExploracionMinera): boolean
+}
+
+' ===================== RELACIONES =====================
+Usuario <|-- MiembroEquipo
+PermisoService <|.. PermisoServiceImpl
+
+ExploracionMinera "1" *-- "0..*" PlataformaExploracion : contiene >
+PlataformaExploracion "1" *-- "0..*" MuestraRoca : obtiene >
+ExploracionMinera "0..*" --> "1" Terreno : se realiza en >
+ExploracionMinera "1" --> "1" ConcesionExploracion : autorizada por >
+ExploracionMinera "1" --> "1" EstudioAmbiental : respaldada por >
+ExploracionMinera ..> PermisoService : valida permisos >
+Terreno "1" o-- "0..*" Permiso : posee >
+MiembroEquipo "0..*" --> "0..*" ExploracionMinera : participa en >
+
+ExploracionMinera --> EstadoExploracion
+Terreno --> TipoZona
+Permiso --> TipoPermiso
+
+@enduml

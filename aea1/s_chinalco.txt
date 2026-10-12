@@ -1,0 +1,40 @@
+SUSTENTACION - EXAMEN PARCIAL SI732
+CASO: MINERA CHINALCO PERU S.A. (EXPLORACION MINERA)
+
+====================================================================
+
+PREGUNTA 1 - UML CLASS DIAGRAM
+
+Elabore el diagrama de clases en PlantUML identificando a ExploracionMinera
+como la clase critica, con composicion hacia PlataformaExploracion y
+MuestraRoca, agregacion entre Terreno y Permiso, herencia de Usuario a
+MiembroEquipo, la interfaz PermisoService y los enums EstadoExploracion,
+TipoPermiso y TipoZona, indicando multiplicidades y el scope de cada miembro.
+
+--------------------------------------------------------------------
+
+PREGUNTA 2 - UNIT TEST & INTEGRATION TEST
+
+Selecciono la clase ExploracionMinera porque concentra el business logic y
+elaboro 4 pruebas unitarias y 1 integral en Java con JUnit y Mockito usando
+el patron AAA. Las unitarias mockean PermisoService para aislar cada regla
+(concesion vigente, zona restringida y permiso del terreno) y la integral usa
+PermisoServiceImpl real para validar el flujo completo hasta el cierre.
+
+--------------------------------------------------------------------
+
+PREGUNTA 3 - FEATURE, SCENARIOS, DATA TABLES & EXAMPLES
+
+Redacto el feature de gestion de exploracion minera en Gherkin con Given-When-Then,
+usando Background para la concesion, Data Tables para los datos del terreno, sus
+permisos y las muestras de roca, y dos Scenario Outline con Examples que recorren
+los valores frontera de la ley (0.49, 0.50 y 0.51) y todos los tipos de zona.
+
+--------------------------------------------------------------------
+
+PREGUNTA 4 - STEP DEFINITION IMPLEMENTATION
+
+Implemento los Step Definitions en Java con Cucumber. Los pasos @Dado leen las
+Data Tables con tabla.asMaps() y construyen los objetos del dominio, los @Cuando
+ejecutan la accion capturando las excepciones en try/catch, y los @Entonces
+comparan el resultado con asserts de JUnit sobre las clases reales del proyecto.

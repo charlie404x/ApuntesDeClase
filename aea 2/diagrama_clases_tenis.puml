@@ -1,0 +1,123 @@
+@startuml
+title Tenis Champions - Gestion de Campeonatos Amateur
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+' ===================== ENUMERACIONES =====================
+enum Categoria {
+  PRIMERA
+  SEGUNDA
+  TERCERA
+  CUARTA
+  QUINTA
+  - nivel: int
+  + getNivel(): int
+}
+
+enum EstadoJugador {
+  HABILITADO
+  INHABILITADO
+}
+
+enum EstadoInscripcion {
+  PENDIENTE
+  CONFIRMADA
+}
+
+enum EstadoPartido {
+  PROGRAMADO
+  REGISTRADO
+  CONFIRMADO
+}
+
+' ===================== INTERFACES =====================
+interface PagoService {
+  + confirmarPago(dni: String, codigoPago: String): boolean
+}
+
+class PagoServiceImpl {
+  + confirmarPago(dni: String, codigoPago: String): boolean
+}
+
+' ===================== CLASE CRITICA =====================
+class Campeonato {
+  - codigo: String
+  - categoria: Categoria
+  - JUGADORES_POR_GRUPO: int {static}
+  + inscribirJugador(j: Jugador, codigoPago: String): Inscripcion
+  + sortearGrupos(): List<Grupo>
+  + getInscripciones(): List<Inscripcion>
+  + getGrupos(): List<Grupo>
+}
+
+class Inscripcion {
+  - jugador: Jugador
+  - fecha: Date
+  - estado: EstadoInscripcion
+  + confirmar(): void
+  + getEstado(): EstadoInscripcion
+}
+
+class Grupo {
+  - numero: int
+  + agregarJugador(j: Jugador): void
+  + cantidadCabezasDeSerie(cabezas: List<Jugador>): int
+  + getJugadores(): List<Jugador>
+}
+
+class Jugador {
+  - dni: String
+  - nombres: String
+  - apellidos: String
+  - estado: EstadoJugador
+  - categoriaCampeonada: Categoria
+  - partidosGanados: int
+  - gamesGanados: int
+  + getRanking(): int
+  + tieneExperiencia(): boolean
+  + estaHabilitado(): boolean
+}
+
+class Partido {
+  - lugar: String
+  - fechaHora: Date
+  - estado: EstadoPartido
+  - urlFotoEvidencia: String
+  + registrarResultado(sets: List<Set>): void
+  + confirmarResultado(j: Jugador): void
+}
+
+class Set {
+  - numero: int
+  - gamesJugadorUno: int
+  - gamesJugadorDos: int
+  + getGanador(): Jugador
+}
+
+class Ronda {
+  - numero: int
+  - eliminatoria: boolean
+  + clasificados(): List<Jugador>
+}
+
+' ===================== RELACIONES =====================
+PagoService <|.. PagoServiceImpl
+
+Campeonato "1" *-- "0..*" Inscripcion : registra >
+Campeonato "1" *-- "0..*" Grupo : conforma >
+Campeonato "1" *-- "1..*" Ronda : se juega en >
+Campeonato ..> PagoService : valida pago >
+Inscripcion "0..*" --> "1" Jugador : corresponde a >
+Grupo "1" o-- "4" Jugador : agrupa >
+Ronda "1" *-- "0..*" Partido : contiene >
+Partido "1" *-- "1..5" Set : se define en >
+Partido "0..*" --> "2" Jugador : enfrenta >
+
+Campeonato --> Categoria
+Jugador --> EstadoJugador
+Jugador --> Categoria
+Inscripcion --> EstadoInscripcion
+Partido --> EstadoPartido
+
+@enduml
